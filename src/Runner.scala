@@ -35,6 +35,7 @@ object Runner extends App {
   }
   var grid: Board = new Board()
 
+  display.displayFPS(true)
   def updateDisplay(): Unit = {
     display.clear()
     display.setColor(Color.darkGray)
@@ -43,8 +44,6 @@ object Runner extends App {
         display.setPixel(i, j)
       }
     }
-    //    var borne: GraphicsBitmap = new GraphicsBitmap("./res/borne.jpg")
-    //    display.drawPicture(0, 0, borne)
     for (i: Int <- 0 until grid.board.length) {
       for (j: Int <- 0 until grid.board(0).length) {
         if (grid.board(i)(j).player == 'a') {
@@ -72,6 +71,7 @@ object Runner extends App {
         }
       }
     }
+    display.syncGameLogic(30)
   }
   grid.spawnPlayer()
   updateDisplay()
@@ -79,7 +79,6 @@ object Runner extends App {
   grid.spawnFood()
   while (!grid.gameOver) {
     updateDisplay()
-
     Thread.sleep(100)
   }
   println("looser")
