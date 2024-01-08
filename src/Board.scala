@@ -1,5 +1,6 @@
 class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
-  var gameOver: Boolean = false
+  var gameOverA: Boolean = false
+  var gameOverB: Boolean = false
   var board: Array[Array[Square]] = Array.ofDim(HEIGHT, WIDTH)
   for (i: Int <- 0 until HEIGHT) {
     for (j: Int <- 0 until HEIGHT) {
@@ -33,65 +34,69 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
     else spawnFood()
   }
 
-  def deleteLastPart(length: Int): Unit = {
+  def deleteLastPart(player: Char, length: Int): Unit = {
     for (i: Int <- 0 until board.length) {
       for (j: Int <- 0 until board(0).length) {
-        if (board(i)(j).snakePos == length) board(i)(j) = new Square(0, 'z')
+        if (board(i)(j).snakePos == length && board(i)(j).player  == player) board(i)(j) = new Square(0, 'z')
       }
     }
   }
 
-  def movement(c: Char, s: String): Unit = {
-    val length: Int = getSnakeLength(c) + 1
+  def movement(player: Char, s: String): Unit = {
+    val length: Int = getSnakeLength(player) + 1
     for (i: Int <- 0 until board.length) {
       for (j: Int <- 0 until board(0).length) {
-        if (board(i)(j).player == c) {
+        if (board(i)(j).player == player) {
           board(i)(j).snakePos += 1
         }
       }
     }
     for (i: Int <- 0 until board.length) {
       for (j: Int <- 0 until board(0).length) {
-        if (board(i)(j).snakePos == 2 && board(i)(j).player == c) {
+        if (board(i)(j).snakePos == 2 && board(i)(j).player == player) {
           s match {
             case "up" => if (i > 0 && board(i - 1)(j).player == 'z' && board(i - 1)(j).snakePos == 0) {
-              board(i - 1)(j) = new Square(1, c)
-              deleteLastPart(length)
+              board(i - 1)(j) = new Square(1, player)
+              deleteLastPart(player, length)
             } else if (i > 0 && board(i - 1)(j).player == 'z' && board(i - 1)(j).snakePos == -1) {
-              board(i - 1)(j) = new Square(1, c)
+              board(i - 1)(j) = new Square(1, player)
               spawnFood()
-            } else if (i > 0 && board(i - 1)(j).player != 'z') gameOver = true
-            else if (i == 0) gameOver = true
+            } else if (i > 0 && board(i - 1)(j).player != 'z') gameOver(player)
+            else if (i == 0) gameOver(player)
 
             case "down" => if (i < HEIGHT - 1 && board(i + 1)(j).player == 'z' && board(i + 1)(j).snakePos == 0) {
-              board(i + 1)(j) = new Square(1, c)
-              deleteLastPart(length)
+              board(i + 1)(j) = new Square(1, player)
+              deleteLastPart(player, length)
             } else if (i < HEIGHT - 1 && board(i + 1)(j).player == 'z' && board(i + 1)(j).snakePos == -1) {
-              board(i + 1)(j) = new Square(1, c)
+              board(i + 1)(j) = new Square(1, player)
               spawnFood()
-            } else if (i < HEIGHT - 1 && board(i + 1)(j).player != 'z') gameOver = true
-            else if (i == HEIGHT - 1) gameOver = true
+            } else if (i < HEIGHT - 1 && board(i + 1)(j).player != 'z') gameOver(player)
+            else if (i == HEIGHT - 1) gameOver(player)
 
             case "right" => if (j < WIDTH - 1 && board(i)(j + 1).player == 'z' && board(i)(j + 1).snakePos == 0) {
-              board(i)(j + 1) = new Square(1, c)
-              deleteLastPart(length)
+              board(i)(j + 1) = new Square(1, player)
+              deleteLastPart(player, length)
             } else if (j < WIDTH - 1 && board(i)(j + 1).player == 'z' && board(i)(j + 1).snakePos == -1) {
-              board(i)(j + 1) = new Square(1, c)
+              board(i)(j + 1) = new Square(1, player)
               spawnFood()
-            } else if (j < WIDTH - 1 && board(i)(j + 1).player != 'z') gameOver = true
-            else if (j == WIDTH - 1) gameOver = true
+            } else if (j < WIDTH - 1 && board(i)(j + 1).player != 'z') gameOver(player)
+            else if (j == WIDTH - 1) gameOver(player)
 
             case "left" => if (j > 0 && board(i)(j - 1).player == 'z' && board(i)(j - 1).snakePos == 0) {
-              board(i)(j - 1) = new Square(1, c)
-              deleteLastPart(length)
+              board(i)(j - 1) = new Square(1, player)
+              deleteLastPart(player, length)
             } else if (j > 0 && board(i)(j - 1).player == 'z' && board(i)(j - 1).snakePos == -1) {
-              board(i)(j - 1) = new Square(1, c)
+              board(i)(j - 1) = new Square(1, player)
               spawnFood()
-            } else if (j > 0 && board(i)(j - 1).player != 'z') gameOver = true
-            else if (j == 0) gameOver = true
+            } else if (j > 0 && board(i)(j - 1).player != 'z') gameOver(player)
+            else if (j == 0) gameOver(player)
           }
         }
       }
     }
+  }
+  def gameOver(player: Char): Unit = {
+    if (player == 'a') gameOverA = true
+    else gameOverB = true
   }
 }

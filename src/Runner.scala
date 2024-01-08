@@ -9,6 +9,8 @@ object Runner extends App {
   val HEIGHT: Int = 500
   var gameOver: Boolean = false
   var display: FunGraphics = new FunGraphics(WIDTH, HEIGHT)
+  var playerADirection: String = "right"
+  var playerBDirection: String = "left"
   var k: KeyListener = new KeyListener {
     override def keyTyped(e: KeyEvent): Unit = {
 
@@ -17,17 +19,16 @@ object Runner extends App {
     override def keyPressed(e: KeyEvent): Unit = {
 
     }
-
     override def keyReleased(e: KeyEvent): Unit = {
       e.getKeyCode match {
-        case KeyEvent.VK_UP => grid.movement('b', "up")
-        case KeyEvent.VK_DOWN => grid.movement('b', "down")
-        case KeyEvent.VK_LEFT => grid.movement('b', "left")
-        case KeyEvent.VK_RIGHT => grid.movement('b', "right")
-        case KeyEvent.VK_W => grid.movement('a', "up")
-        case KeyEvent.VK_S => grid.movement('a', "down")
-        case KeyEvent.VK_D => grid.movement('a', "right")
-        case KeyEvent.VK_A => grid.movement('a', "left")
+        case KeyEvent.VK_UP => playerBDirection = "up"
+        case KeyEvent.VK_DOWN => playerBDirection= "down"
+        case KeyEvent.VK_LEFT => playerBDirection = "left"
+        case KeyEvent.VK_RIGHT => playerBDirection = "right"
+        case KeyEvent.VK_W => playerADirection = "up"
+        case KeyEvent.VK_S => playerADirection = "down"
+        case KeyEvent.VK_D => playerADirection = "right"
+        case KeyEvent.VK_A => playerADirection = "left"
         case _ => {
         }
       }
@@ -35,7 +36,7 @@ object Runner extends App {
   }
   var grid: Board = new Board()
 
-  display.displayFPS(true)
+  // display.displayFPS(true)
 
   def updateDisplay(): Unit = {
 
@@ -80,11 +81,16 @@ object Runner extends App {
   updateDisplay()
   display.setKeyManager(k)
   grid.spawnFood()
-  while (!grid.gameOver) {
+  while (!grid.gameOverA && !grid.gameOverB) {
+    grid.movement('a', playerADirection)
+    grid.movement('b', playerBDirection)
     display.frontBuffer.synchronized{
+
       updateDisplay()
     }
-    display.syncGameLogic(10)
+    display.syncGameLogic(8)
   }
-  println("looser")
+  if (grid.gameOverA && grid.gameOverB) println("Tie")
+  else if(grid.gameOverB) println("A won")
+  else if (grid.gameOverA) println("B won")
 }
