@@ -36,43 +36,48 @@ object Runner extends App {
   var grid: Board = new Board()
 
   display.displayFPS(true)
+
   def updateDisplay(): Unit = {
-    display.clear()
-    display.setColor(Color.darkGray)
-    for (i: Int <- 0 until WIDTH) {
-      for (j: Int <- 0 until HEIGHT) {
-        display.setPixel(i, j)
-      }
-    }
-    for (i: Int <- 0 until grid.board.length) {
-      for (j: Int <- 0 until grid.board(0).length) {
-        if (grid.board(i)(j).player == 'a') {
-          display.setColor(Color.blue)
-          display.drawFillRect(j * (WIDTH / 25), i * (HEIGHT / 25), (j + 1) * (WIDTH / 25), (i + 1) * (HEIGHT / 25))
-        }
-        if (grid.board(i)(j).player == 'b') {
-          display.setColor(Color.red)
-          display.drawFillRect(j * (WIDTH / 25), i * (HEIGHT / 25), (j + 1) * (WIDTH / 25), (i + 1) * (HEIGHT / 25))
-        }
-        if (grid.board(i)(j).player == 'z' && grid.board(i)(j).snakePos == 0) {
-          display.setColor(Color.darkGray)
-          display.drawFillRect(j * (WIDTH / 25), i * (HEIGHT / 25), (j + 1) * (WIDTH / 25), (i + 1) * (HEIGHT / 25))
-        }
-        if (grid.board(i)(j).player == 'z' && grid.board(i)(j).snakePos == -1) {
-          display.setColor(Color.yellow)
-          display.drawFillRect(j * (WIDTH / 25), i * (HEIGHT / 25), (j + 1) * (WIDTH / 25), (i + 1) * (HEIGHT / 25))
-        }
-        display.setColor(Color.black)
-        for (y: Int <- HEIGHT / grid.HEIGHT until HEIGHT by HEIGHT / grid.HEIGHT) {
-          display.drawLine(0, y, HEIGHT - 1, y)
-        }
-        for (x: Int <- WIDTH / grid.WIDTH until WIDTH by WIDTH / grid.WIDTH) {
-          display.drawLine(x, 0, x, WIDTH - 1)
+    display.frontBuffer.synchronized {
+      display.clear()
+      display.setColor(Color.darkGray)
+      for (i: Int <- 0 until WIDTH) {
+        for (j: Int <- 0 until HEIGHT) {
+          display.setPixel(i, j)
         }
       }
+      for (i: Int <- 0 until grid.board.length) {
+        for (j: Int <- 0 until grid.board(0).length) {
+          if (grid.board(i)(j).player == 'a') {
+            display.setColor(Color.blue)
+            display.drawFillRect(j * (WIDTH / 25), i * (HEIGHT / 25), (j + 1) * (WIDTH / 25), (i + 1) * (HEIGHT / 25))
+          }
+          if (grid.board(i)(j).player == 'b') {
+            display.setColor(Color.red)
+            display.drawFillRect(j * (WIDTH / 25), i * (HEIGHT / 25), (j + 1) * (WIDTH / 25), (i + 1) * (HEIGHT / 25))
+          }
+          if (grid.board(i)(j).player == 'z' && grid.board(i)(j).snakePos == 0) {
+            display.setColor(Color.darkGray)
+            display.drawFillRect(j * (WIDTH / 25), i * (HEIGHT / 25), (j + 1) * (WIDTH / 25), (i + 1) * (HEIGHT / 25))
+          }
+          if (grid.board(i)(j).player == 'z' && grid.board(i)(j).snakePos == -1) {
+            display.setColor(Color.yellow)
+            display.drawFillRect(j * (WIDTH / 25), i * (HEIGHT / 25), (j + 1) * (WIDTH / 25), (i + 1) * (HEIGHT / 25))
+          }
+          display.setColor(Color.black)
+          for (y: Int <- HEIGHT / grid.HEIGHT until HEIGHT by HEIGHT / grid.HEIGHT) {
+            display.drawLine(0, y, HEIGHT - 1, y)
+          }
+          for (x: Int <- WIDTH / grid.WIDTH until WIDTH by WIDTH / grid.WIDTH) {
+            display.drawLine(x, 0, x, WIDTH - 1)
+          }
+        }
+      }
+      //display.syncGameLogic(30)
     }
-    display.syncGameLogic(30)
+
   }
+
   grid.spawnPlayer()
   updateDisplay()
   display.setKeyManager(k)
