@@ -146,7 +146,8 @@ object Runner extends App {
     if (playAgain) {
       grid.gameOverA = false
       grid.gameOverB = false
-      println(s"A: ${grid.gameOverA} and B: ${grid.gameOverB}")
+      playerADirection = "right"
+      playerBDirection = "left"
       play()
     }
   }
