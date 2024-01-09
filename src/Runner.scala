@@ -13,24 +13,24 @@ object Runner extends App {
   var display: FunGraphics = new FunGraphics(WIDTH, HEIGHT)
   var playerADirection: String = "right"
   var playerBDirection: String = "left"
+  var waitForInput: Boolean = false
   var k: KeyListener = new KeyListener {
     override def keyTyped(e: KeyEvent): Unit = {
 
     }
 
-    override def keyPressed(e: KeyEvent): Unit = {
+    override def keyReleased(e: KeyEvent): Unit = {
 
     }
 
-    override def keyReleased(e: KeyEvent): Unit = {
+    override def keyPressed(e: KeyEvent): Unit = {
       e.getKeyCode match {
         case KeyEvent.VK_SPACE => start = true
         case KeyEvent.VK_P => {
+          if (waitForInput)
           playAgain = true
-          println("P pressed")
-          println(playAgain)
         }
-        case KeyEvent.VK_Q => end = true
+        case KeyEvent.VK_Q => if (waitForInput)end = true
         case KeyEvent.VK_UP => playerBDirection = "up"
         case KeyEvent.VK_DOWN => playerBDirection = "down"
         case KeyEvent.VK_LEFT => playerBDirection = "left"
@@ -67,6 +67,7 @@ object Runner extends App {
         display.setPixel(i, j)
       }
     }
+    display.drawFancyString(100, 100, s"${if(grid.gameOverA && grid.gameOverB) "Tie" else if(grid.gameOverB){"Player A won"}else if(grid.gameOverA){"Player B won"}}", Color.black, 20)
     display.drawFancyString(100, 200, "Press p to play again or q to quit", Color.black, 20)
   }
 
@@ -113,6 +114,7 @@ object Runner extends App {
 
   def play(): Unit = {
     grid.setGrid()
+    waitForInput = false
     playAgain = false
     while (!start) {
       display.frontBuffer.synchronized {
@@ -142,8 +144,11 @@ object Runner extends App {
   }
   play()
   while (!end) {
+    println(waitForInput)
+    waitForInput = true
     Thread.sleep(100)
     if (playAgain) {
+      waitForInput = true
       grid.gameOverA = false
       grid.gameOverB = false
       playerADirection = "right"
@@ -151,4 +156,5 @@ object Runner extends App {
       play()
     }
   }
+  System.exit(1)
 }
