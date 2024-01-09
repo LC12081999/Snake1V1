@@ -2,9 +2,12 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
   var gameOverA: Boolean = false
   var gameOverB: Boolean = false
   var board: Array[Array[Square]] = Array.ofDim(HEIGHT, WIDTH)
-  for (i: Int <- 0 until HEIGHT) {
-    for (j: Int <- 0 until HEIGHT) {
-      board(i)(j) = new Square(0, 'z')
+
+  def setGrid(): Unit = {
+    for (i: Int <- 0 until HEIGHT) {
+      for (j: Int <- 0 until HEIGHT) {
+        board(i)(j) = new Square(0, 'z')
+      }
     }
   }
 
@@ -37,7 +40,7 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
   def deleteLastPart(player: Char, length: Int): Unit = {
     for (i: Int <- 0 until board.length) {
       for (j: Int <- 0 until board(0).length) {
-        if (board(i)(j).snakePos == length && board(i)(j).player  == player) board(i)(j) = new Square(0, 'z')
+        if (board(i)(j).snakePos == length && board(i)(j).player == player) board(i)(j) = new Square(0, 'z')
       }
     }
   }
@@ -95,6 +98,7 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
       }
     }
   }
+
   def gameOver(player: Char): Unit = {
     if (player == 'a') gameOverA = true
     else gameOverB = true

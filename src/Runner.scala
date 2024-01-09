@@ -7,7 +7,9 @@ import java.awt.event.{KeyEvent, KeyListener}
 object Runner extends App {
   val WIDTH: Int = 500
   val HEIGHT: Int = 500
-  var gameOver: Boolean = false
+  var start: Boolean = false
+  var playAgain: Boolean = false
+  var end: Boolean = false
   var display: FunGraphics = new FunGraphics(WIDTH, HEIGHT)
   var playerADirection: String = "right"
   var playerBDirection: String = "left"
@@ -19,10 +21,18 @@ object Runner extends App {
     override def keyPressed(e: KeyEvent): Unit = {
 
     }
+
     override def keyReleased(e: KeyEvent): Unit = {
       e.getKeyCode match {
+        case KeyEvent.VK_SPACE => start = true
+        case KeyEvent.VK_P => {
+          playAgain = true
+          println("P pressed")
+          println(playAgain)
+        }
+        case KeyEvent.VK_Q => end = true
         case KeyEvent.VK_UP => playerBDirection = "up"
-        case KeyEvent.VK_DOWN => playerBDirection= "down"
+        case KeyEvent.VK_DOWN => playerBDirection = "down"
         case KeyEvent.VK_LEFT => playerBDirection = "left"
         case KeyEvent.VK_RIGHT => playerBDirection = "right"
         case KeyEvent.VK_W => playerADirection = "up"
@@ -37,6 +47,28 @@ object Runner extends App {
   var grid: Board = new Board()
 
   // display.displayFPS(true)
+
+  def startDisplay(): Unit = {
+    display.clear()
+    display.setColor(Color.yellow)
+    for (i: Int <- 0 until WIDTH) {
+      for (j: Int <- 0 until HEIGHT) {
+        display.setPixel(i, j)
+      }
+    }
+    display.drawFancyString(100, 200, "Press space to start the game", Color.black, 20)
+  }
+
+  def playAgainDisplay(): Unit = {
+    display.clear()
+    display.setColor(Color.yellow)
+    for (i: Int <- 0 until WIDTH) {
+      for (j: Int <- 0 until HEIGHT) {
+        display.setPixel(i, j)
+      }
+    }
+    display.drawFancyString(100, 200, "Press p to play again or q to quit", Color.black, 20)
+  }
 
   def updateDisplay(): Unit = {
 
@@ -77,20 +109,45 @@ object Runner extends App {
 
   }
 
-  grid.spawnPlayer()
-  updateDisplay()
   display.setKeyManager(k)
-  grid.spawnFood()
-  while (!grid.gameOverA && !grid.gameOverB) {
-    grid.movement('a', playerADirection)
-    grid.movement('b', playerBDirection)
-    display.frontBuffer.synchronized{
 
-      updateDisplay()
+  def play(): Unit = {
+    grid.setGrid()
+    playAgain = false
+    while (!start) {
+      display.frontBuffer.synchronized {
+        startDisplay()
+      }
     }
-    display.syncGameLogic(8)
+    grid.spawnPlayer()
+    updateDisplay()
+    grid.spawnFood()
+    while (!grid.gameOverA && !grid.gameOverB) {
+      grid.movement('a', playerADirection)
+      grid.movement('b', playerBDirection)
+      display.frontBuffer.synchronized {
+        updateDisplay()
+      }
+      display.syncGameLogic(8)
+    }
+    println(grid.gameOverA)
+    println(grid.gameOverB)
+    if (grid.gameOverA && grid.gameOverB) println("Tie")
+    else if (grid.gameOverB) println("A won")
+    else if (grid.gameOverA) println("B won")
+    display.frontBuffer.synchronized {
+      playAgainDisplay()
+    }
+    start = false
   }
-  if (grid.gameOverA && grid.gameOverB) println("Tie")
-  else if(grid.gameOverB) println("A won")
-  else if (grid.gameOverA) println("B won")
+  play()
+  while (!end) {
+    Thread.sleep(100)
+    if (playAgain) {
+      grid.gameOverA = false
+      grid.gameOverB = false
+      println(s"A: ${grid.gameOverA} and B: ${grid.gameOverB}")
+      play()
+    }
+  }
 }
