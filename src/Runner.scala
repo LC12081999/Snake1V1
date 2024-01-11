@@ -5,6 +5,7 @@ import java.awt.Color
 import java.awt.event.{KeyEvent, KeyListener}
 
 object Runner extends App {
+  val death: AudioPlayer = new AudioPlayer("res/splush.wav")
   val WIDTH: Int = 500
   val HEIGHT: Int = 500
   var start: Boolean = false
@@ -61,6 +62,7 @@ object Runner extends App {
   }
 
   def playAgainDisplay(): Unit = {
+    death.play()
     display.clear(Color.yellow)
 //    display.clear()
 //    display.setColor(Color.yellow)
@@ -127,6 +129,7 @@ object Runner extends App {
     grid.setGrid()
     grid.spawnPlayer()
     updateDisplay()
+    grid.spawnFood()
     grid.spawnFood()
     while (!grid.gameOverA && !grid.gameOverB) {
       grid.movement('a', playerADirection)

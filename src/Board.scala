@@ -1,5 +1,3 @@
-import Snake1vs1.src.AudioPlayer
-
 class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
   var gameOverA: Boolean = false
   var gameOverB: Boolean = false
@@ -32,7 +30,7 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
     return length
   }
 
-  val sound = new AudioPlayer("./res/miam.wav")
+  val sound = new AudioPlayer("res/miam.wav")
 
   def spawnFood(): Unit = {
     sound.play()

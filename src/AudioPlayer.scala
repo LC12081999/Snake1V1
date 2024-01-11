@@ -1,7 +1,8 @@
-package Snake1vs1.src
 import javax.sound.sampled.{AudioSystem, Clip}
 
 class AudioPlayer(path: String) {
+  var audioClip: Clip = null
+
   try {
     // Create audio input URL
     val url = this.getClass.getClassLoader.getResource(path)
@@ -13,12 +14,13 @@ class AudioPlayer(path: String) {
     case e: Exception =>
       e.printStackTrace()
   }
-  var audioClip: Clip = null
+//  var audioClip: Clip = null
 
   def play(): Unit = {
     // Open stream and play
     try {
-      if (!audioClip.isOpen) audioClip.open()
+      if (!audioClip.isOpen)
+        audioClip.open()
       audioClip.stop()
       audioClip.setMicrosecondPosition(0)
       audioClip.start()
