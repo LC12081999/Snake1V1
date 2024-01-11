@@ -1,3 +1,5 @@
+import Snake1vs1.src.AudioPlayer
+
 class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
   var gameOverA: Boolean = false
   var gameOverB: Boolean = false
@@ -30,7 +32,10 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
     return length
   }
 
+  val sound = new AudioPlayer("./res/miam.wav")
+
   def spawnFood(): Unit = {
+    sound.play()
     var i: Int = (math.random() * 25).toInt
     var j: Int = (math.random() * 25).toInt
     if (board(i)(j).player == 'z') board(i)(j) = new Square(-1, 'z')
@@ -100,6 +105,7 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
   }
 
   def gameOver(player: Char): Unit = {
+
     if (player == 'a') gameOverA = true
     else gameOverB = true
   }

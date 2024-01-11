@@ -14,6 +14,7 @@ object Runner extends App {
   var playerADirection: String = "right"
   var playerBDirection: String = "left"
   var waitForInput: Boolean = false
+  var startScreen = true
   var k: KeyListener = new KeyListener {
     override def keyTyped(e: KeyEvent): Unit = {
 
@@ -25,20 +26,20 @@ object Runner extends App {
 
     override def keyPressed(e: KeyEvent): Unit = {
       e.getKeyCode match {
-        case KeyEvent.VK_SPACE => start = true
+        case KeyEvent.VK_SPACE => if(startScreen)start = true
         case KeyEvent.VK_P => {
           if (waitForInput)
           playAgain = true
         }
         case KeyEvent.VK_Q => if (waitForInput)end = true
-        case KeyEvent.VK_UP => playerBDirection = "up"
-        case KeyEvent.VK_DOWN => playerBDirection = "down"
-        case KeyEvent.VK_LEFT => playerBDirection = "left"
-        case KeyEvent.VK_RIGHT => playerBDirection = "right"
-        case KeyEvent.VK_W => playerADirection = "up"
-        case KeyEvent.VK_S => playerADirection = "down"
-        case KeyEvent.VK_D => playerADirection = "right"
-        case KeyEvent.VK_A => playerADirection = "left"
+        case KeyEvent.VK_UP => if(playerBDirection!="down") playerBDirection = "up"
+        case KeyEvent.VK_DOWN => if(playerBDirection != "up") playerBDirection = "down"
+        case KeyEvent.VK_LEFT => if(playerBDirection != "right") playerBDirection = "left"
+        case KeyEvent.VK_RIGHT => if(playerBDirection != "left") playerBDirection = "right"
+        case KeyEvent.VK_W => if(playerADirection != "down") playerADirection = "up"
+        case KeyEvent.VK_S => if(playerADirection != "up") playerADirection = "down"
+        case KeyEvent.VK_D => if(playerADirection != "left") playerADirection = "right"
+        case KeyEvent.VK_A => if(playerADirection != "right") playerADirection = "left"
         case _ => {
         }
       }
@@ -49,24 +50,25 @@ object Runner extends App {
   // display.displayFPS(true)
 
   def startDisplay(): Unit = {
-    display.clear()
-    display.setColor(Color.yellow)
-    for (i: Int <- 0 until WIDTH) {
-      for (j: Int <- 0 until HEIGHT) {
-        display.setPixel(i, j)
-      }
-    }
+    display.clear(Color.yellow)
+//    display.setColor(Color.yellow)
+//    for (i: Int <- 0 until WIDTH) {
+//      for (j: Int <- 0 until HEIGHT) {
+//        display.setPixel(i, j)
+//      }
+//    }
     display.drawFancyString(100, 200, "Press space to start the game", Color.black, 20)
   }
 
   def playAgainDisplay(): Unit = {
-    display.clear()
-    display.setColor(Color.yellow)
-    for (i: Int <- 0 until WIDTH) {
-      for (j: Int <- 0 until HEIGHT) {
-        display.setPixel(i, j)
-      }
-    }
+    display.clear(Color.yellow)
+//    display.clear()
+//    display.setColor(Color.yellow)
+//    for (i: Int <- 0 until WIDTH) {
+//      for (j: Int <- 0 until HEIGHT) {
+//        display.setPixel(i, j)
+//      }
+//    }
     display.drawFancyString(100, 100, s"${if(grid.gameOverA && grid.gameOverB) "Tie" else if(grid.gameOverB){"Player A won"}else if(grid.gameOverA){"Player B won"}}", Color.black, 20)
     display.drawFancyString(100, 200, "Press p to play again or q to quit", Color.black, 20)
   }
@@ -113,14 +115,16 @@ object Runner extends App {
   display.setKeyManager(k)
 
   def play(): Unit = {
-    grid.setGrid()
     waitForInput = false
     playAgain = false
     while (!start) {
+      startScreen = true
       display.frontBuffer.synchronized {
         startDisplay()
       }
     }
+    startScreen = false
+    grid.setGrid()
     grid.spawnPlayer()
     updateDisplay()
     grid.spawnFood()
@@ -130,13 +134,8 @@ object Runner extends App {
       display.frontBuffer.synchronized {
         updateDisplay()
       }
-      display.syncGameLogic(8)
+      display.syncGameLogic(10)
     }
-    println(grid.gameOverA)
-    println(grid.gameOverB)
-    if (grid.gameOverA && grid.gameOverB) println("Tie")
-    else if (grid.gameOverB) println("A won")
-    else if (grid.gameOverA) println("B won")
     display.frontBuffer.synchronized {
       playAgainDisplay()
     }
@@ -144,7 +143,6 @@ object Runner extends App {
   }
   play()
   while (!end) {
-    println(waitForInput)
     waitForInput = true
     Thread.sleep(100)
     if (playAgain) {
