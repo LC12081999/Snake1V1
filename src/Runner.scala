@@ -14,10 +14,10 @@ object Runner extends App {
   var playAgain: Boolean = false
   var end: Boolean = false
   var display: FunGraphics = new FunGraphics(WIDTH, HEIGHT)
-  var playerADirection: String = "right"
-  var playerBDirection: String = "left"
+  var playerADirection: String = "right" // direction initiale joueur a
+  var playerBDirection: String = "left" // direction initiale joueur b
   var waitForInput: Boolean = false
-  var startScreen = true
+  var startScreen: Boolean = true
   var k: KeyListener = new KeyListener {
     override def keyTyped(e: KeyEvent): Unit = {
 
@@ -26,7 +26,7 @@ object Runner extends App {
     override def keyReleased(e: KeyEvent): Unit = {
 
     }
-
+    // Gestion des inputs
     override def keyPressed(e: KeyEvent): Unit = {
       e.getKeyCode match {
         case KeyEvent.VK_SPACE => if(startScreen)start = true
@@ -50,11 +50,13 @@ object Runner extends App {
   }
   var grid: Board = new Board()
 
+  // Ecran d'accueil
   def startDisplay(): Unit = {
     display.clear(Color.yellow)
     display.drawFancyString(100, 200, "Press space to start the game", Color.black, 20)
   }
 
+  // Ecran de fin de partie
   def playAgainDisplay(): Unit = {
     death.play()
     display.clear(Color.yellow)
@@ -62,6 +64,7 @@ object Runner extends App {
     display.drawFancyString(100, 200, "Press p to play again or q to quit", Color.black, 20)
   }
 
+  // Fonction qui raffraichit l'affichage à chaque frame
   def updateDisplay(): Unit = {
 
     display.clear()
@@ -101,8 +104,10 @@ object Runner extends App {
 
   }
 
+  // Appel du keyListener
   display.setKeyManager(k)
 
+  // Fonction qui contient la logique de jeu
   def play(): Unit = {
     waitForInput = false
     playAgain = false
@@ -131,7 +136,9 @@ object Runner extends App {
     }
     start = false
   }
+  // Appel de la fonction pour lancer la première partie
   play()
+  // Boucle pour pouvoir relancer une partie depuis l'interface utilisateur dans devoir rerun le code
   while (!end) {
     waitForInput = true
     Thread.sleep(100)
