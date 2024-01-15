@@ -2,6 +2,12 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
   var gameOverA: Boolean = false
   var gameOverB: Boolean = false
   var board: Array[Array[Square]] = Array.ofDim(HEIGHT, WIDTH)
+  val up: AudioPlayer = new AudioPlayer("res/haut.wav")
+  val down: AudioPlayer = new AudioPlayer("res/bas.wav")
+  val left: AudioPlayer = new AudioPlayer("res/gauche.wav")
+  val right: AudioPlayer = new AudioPlayer("res/droite.wav")
+  val miam = new AudioPlayer("res/miam.wav")
+
 
   def setGrid(): Unit = {
     for (i: Int <- 0 until HEIGHT) {
@@ -30,10 +36,9 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
     return length
   }
 
-  val sound = new AudioPlayer("res/miam.wav")
 
   def spawnFood(): Unit = {
-    sound.play()
+    miam.play()
     var i: Int = (math.random() * 25).toInt
     var j: Int = (math.random() * 25).toInt
     if (board(i)(j).player == 'z') board(i)(j) = new Square(-1, 'z')
@@ -64,17 +69,21 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
             case "up" => if (i > 0 && board(i - 1)(j).player == 'z' && board(i - 1)(j).snakePos == 0) {
               board(i - 1)(j) = new Square(1, player)
               deleteLastPart(player, length)
+              up.play()
             } else if (i > 0 && board(i - 1)(j).player == 'z' && board(i - 1)(j).snakePos == -1) {
               board(i - 1)(j) = new Square(1, player)
               spawnFood()
+              up.play()
             } else if (i > 0 && board(i - 1)(j).player != 'z') gameOver(player)
             else if (i == 0) gameOver(player)
 
             case "down" => if (i < HEIGHT - 1 && board(i + 1)(j).player == 'z' && board(i + 1)(j).snakePos == 0) {
               board(i + 1)(j) = new Square(1, player)
               deleteLastPart(player, length)
+              down.play()
             } else if (i < HEIGHT - 1 && board(i + 1)(j).player == 'z' && board(i + 1)(j).snakePos == -1) {
               board(i + 1)(j) = new Square(1, player)
+              down.play()
               spawnFood()
             } else if (i < HEIGHT - 1 && board(i + 1)(j).player != 'z') gameOver(player)
             else if (i == HEIGHT - 1) gameOver(player)
@@ -82,18 +91,24 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
             case "right" => if (j < WIDTH - 1 && board(i)(j + 1).player == 'z' && board(i)(j + 1).snakePos == 0) {
               board(i)(j + 1) = new Square(1, player)
               deleteLastPart(player, length)
+              right.play()
             } else if (j < WIDTH - 1 && board(i)(j + 1).player == 'z' && board(i)(j + 1).snakePos == -1) {
               board(i)(j + 1) = new Square(1, player)
               spawnFood()
+              right.play()
+
             } else if (j < WIDTH - 1 && board(i)(j + 1).player != 'z') gameOver(player)
             else if (j == WIDTH - 1) gameOver(player)
 
             case "left" => if (j > 0 && board(i)(j - 1).player == 'z' && board(i)(j - 1).snakePos == 0) {
               board(i)(j - 1) = new Square(1, player)
               deleteLastPart(player, length)
+              left.play()
             } else if (j > 0 && board(i)(j - 1).player == 'z' && board(i)(j - 1).snakePos == -1) {
               board(i)(j - 1) = new Square(1, player)
               spawnFood()
+              left.play()
+
             } else if (j > 0 && board(i)(j - 1).player != 'z') gameOver(player)
             else if (j == 0) gameOver(player)
           }

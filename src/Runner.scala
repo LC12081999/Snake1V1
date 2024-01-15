@@ -6,6 +6,8 @@ import java.awt.event.{KeyEvent, KeyListener}
 
 object Runner extends App {
   val death: AudioPlayer = new AudioPlayer("res/splush.wav")
+  val youpi: AudioPlayer = new AudioPlayer("res/youpi.wav")
+  val quit: AudioPlayer = new AudioPlayer("res/quit.wav")
   val WIDTH: Int = 500
   val HEIGHT: Int = 500
   var start: Boolean = false
@@ -48,29 +50,14 @@ object Runner extends App {
   }
   var grid: Board = new Board()
 
-  // display.displayFPS(true)
-
   def startDisplay(): Unit = {
     display.clear(Color.yellow)
-//    display.setColor(Color.yellow)
-//    for (i: Int <- 0 until WIDTH) {
-//      for (j: Int <- 0 until HEIGHT) {
-//        display.setPixel(i, j)
-//      }
-//    }
     display.drawFancyString(100, 200, "Press space to start the game", Color.black, 20)
   }
 
   def playAgainDisplay(): Unit = {
     death.play()
     display.clear(Color.yellow)
-//    display.clear()
-//    display.setColor(Color.yellow)
-//    for (i: Int <- 0 until WIDTH) {
-//      for (j: Int <- 0 until HEIGHT) {
-//        display.setPixel(i, j)
-//      }
-//    }
     display.drawFancyString(100, 100, s"${if(grid.gameOverA && grid.gameOverB) "Tie" else if(grid.gameOverB){"Player A won"}else if(grid.gameOverA){"Player B won"}}", Color.black, 20)
     display.drawFancyString(100, 200, "Press p to play again or q to quit", Color.black, 20)
   }
@@ -137,7 +124,7 @@ object Runner extends App {
       display.frontBuffer.synchronized {
         updateDisplay()
       }
-      display.syncGameLogic(10)
+      display.syncGameLogic(8)
     }
     display.frontBuffer.synchronized {
       playAgainDisplay()
@@ -149,6 +136,7 @@ object Runner extends App {
     waitForInput = true
     Thread.sleep(100)
     if (playAgain) {
+      youpi.play()
       waitForInput = true
       grid.gameOverA = false
       grid.gameOverB = false
@@ -157,5 +145,6 @@ object Runner extends App {
       play()
     }
   }
+  quit.play()
   System.exit(1)
 }
