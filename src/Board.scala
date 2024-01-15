@@ -9,6 +9,7 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
   val miam = new AudioPlayer("res/miam.wav")
 
 
+  // Fonction qui génère la grille
   def setGrid(): Unit = {
     for (i: Int <- 0 until HEIGHT) {
       for (j: Int <- 0 until HEIGHT) {
@@ -17,6 +18,7 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
     }
   }
 
+  // Fonction qui fait spawn les joueurs
   def spawnPlayer(): Unit = {
     board(0)(0) = new Square(3, 'a')
     board(0)(1) = new Square(2, 'a')
@@ -26,6 +28,7 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
     board(24)(22) = new Square(1, 'b')
   }
 
+  // Fonction qui retourne la longueur d'un serpent
   def getSnakeLength(c: Char): Int = {
     var length: Int = 0
     for (i: Int <- 0 until board.length) {
@@ -36,7 +39,7 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
     return length
   }
 
-
+// Fonction qui fait spawn de la nourriture sur la grille
   def spawnFood(): Unit = {
     miam.play()
     var i: Int = (math.random() * 25).toInt
@@ -45,6 +48,7 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
     else spawnFood()
   }
 
+  // Fonction qui delete la dernière partie du serpent lorsque il se déplace et qu'il n'arrive pas sur une case nourriture
   def deleteLastPart(player: Char, length: Int): Unit = {
     for (i: Int <- 0 until board.length) {
       for (j: Int <- 0 until board(0).length) {
@@ -52,7 +56,7 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
       }
     }
   }
-
+// Fonction qui gère les mouvements dans la grille ainsi et active les booléens qui mettent fin à la partie
   def movement(player: Char, s: String): Unit = {
     val length: Int = getSnakeLength(player) + 1
     for (i: Int <- 0 until board.length) {
