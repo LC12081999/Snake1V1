@@ -138,7 +138,7 @@ object Runner extends App {
   }
   // Appel de la fonction pour lancer la première partie
   play()
-  // Boucle pour pouvoir relancer une partie depuis l'interface utilisateur dans devoir rerun le code
+  // Boucle pour pouvoir relancer une partie depuis l'interface utilisateur sans devoir rerun le code
   while (!end) {
     waitForInput = true
     Thread.sleep(100)

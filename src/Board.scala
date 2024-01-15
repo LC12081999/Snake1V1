@@ -56,7 +56,7 @@ class Board(val WIDTH: Int = 25, val HEIGHT: Int = 25) {
       }
     }
   }
-// Fonction qui gère les mouvements dans la grille ainsi et active les booléens qui mettent fin à la partie
+// Fonction qui gère les mouvements dans la grille et active les booléens qui mettent fin à la partie (Bon courage :3)
   def movement(player: Char, s: String): Unit = {
     val length: Int = getSnakeLength(player) + 1
     for (i: Int <- 0 until board.length) {
