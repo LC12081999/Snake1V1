@@ -146,5 +146,6 @@ object Runner extends App {
     }
   }
   quit.play()
+  Thread.sleep(1000)
   System.exit(1)
 }
